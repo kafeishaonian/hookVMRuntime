@@ -12,7 +12,6 @@ public class MyApplication extends Application {
         try {
             UnsealUtils.unseal();
         } catch (Exception e) {
-            Log.e("BypassProvider", "Unable to unseal hidden api access", e);
         }
     }
 

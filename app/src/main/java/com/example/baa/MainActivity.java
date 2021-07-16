@@ -4,21 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.baa.databinding.ActivityMainBinding;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
 
     private ActivityMainBinding binding;
 
@@ -63,22 +57,10 @@ public class MainActivity extends AppCompatActivity {
     public void hookQueuedWork(){
         try {
             Class work = Class.forName("android.app.QueuedWork");
-            Method[] methods = work.getMethods();
-            Method[] methods1 = work.getDeclaredMethods();
-
-            for (int i = 0; i < methods.length; i++){
-                Log.e("TAG", "hook: ======" + methods[i]);
-            }
-
-            Log.e("TAG", "===================================");
-
-            for (int i = 0; i < methods1.length; i++){
-                Log.e("TAG", "hook: ======" + methods1[i]);
-            }
-
-//            Method workCurrent = work.getMethod("waitToFinish", null);
-//            Constructor constructor = work.getConstructor();
-//            Object object = constructor.newInstance();
+            Method workCurrent = work.getMethod("waitToFinish", null);
+            Constructor constructor = work.getConstructor();
+            Object object = constructor.newInstance();
+            workCurrent.invoke(object, new Class[]{});
         } catch (Exception e){
 
         }
