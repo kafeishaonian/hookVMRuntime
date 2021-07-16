@@ -3,12 +3,14 @@ package com.example.baa;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.baa.databinding.ActivityMainBinding;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,12 +34,33 @@ public class MainActivity extends AppCompatActivity {
         tv.setText("哈哈哈哈哈");
 
         tv.setOnClickListener(v -> {
-            hook();
+            hookActivityThread();
         });
     }
 
+    public void hookActivityThread(){
+        try {
+            Class cThread = Class.forName("android.app.ActivityThread");
+            Field currentThread = cThread.getDeclaredField("sCurrentActivityThread");
+            currentThread.setAccessible(true);
+            Object currThread = currentThread.get(null);
+            Field field = cThread.getDeclaredField("mH");
+            field.setAccessible(true);
+            Handler handler = (Handler) field.get(currThread);
+            if (handler != null) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        hookQueuedWork();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void hook(){
+    public void hookQueuedWork(){
         try {
             Class work = Class.forName("android.app.QueuedWork");
             Method[] methods = work.getMethods();
