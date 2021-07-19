@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.baa.databinding.ActivityMainBinding;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         tv.setOnClickListener(v -> {
             hookActivityThread();
+//            hookQueuedWork1();
         });
     }
 
@@ -63,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
             workCurrent.invoke(object, new Class[]{});
         } catch (Exception e){
 
+        }
+    }
+
+    public void hookQueuedWork1(){
+        try {
+            Method getRuntime = RestrictionBypass.getMethod(
+                    Class.forName("android.app.QueuedWork"),
+                    "waitToFinish"
+            );
+            getRuntime.setAccessible(true);
+            getRuntime.invoke(null);
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
