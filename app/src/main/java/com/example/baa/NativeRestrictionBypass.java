@@ -12,4 +12,6 @@ public class NativeRestrictionBypass {
     public static native Method getDeclaredMethod(Object recv, String name, Class<?>[] parameterTypes);
     public static native Method getMethod(Object recv, String name, Class<?>[] parameterTypes);
     public static native Field getDeclaredField(Object recv, String name);
+
+    public static native int SoFileCopy(String srcFilePath, String dstFilePath);
 }

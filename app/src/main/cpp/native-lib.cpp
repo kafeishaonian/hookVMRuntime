@@ -6,8 +6,11 @@
 #include <android/log.h>
 #include <thread>
 #include <future>
+#include <fstream>
+#include <iostream>
 
 JavaVM *_vm;
+using namespace std;
 
 JNIEnv *attachCurrentThread(){
     JNIEnv *env;
@@ -187,11 +190,34 @@ static jobject Java_getDeclaredField(JNIEnv *env,
     return result;
 }
 
+static jint Java_SoFileCopy(JNIEnv *env, jclass interface, jstring strFilePath, jstring dstFilePath) {
+
+    const char* _strPath = env->GetStringUTFChars(strFilePath, NULL);
+    const char* _dstPath = env->GetStringUTFChars(dstFilePath, NULL);
+
+    ifstream src;
+    src.open(_strPath, ios::in|ios::binary);
+
+    ofstream dst;
+    dst.open(_dstPath, ios::binary);
+
+    dst << src.rdbuf();
+
+    env->ReleaseStringUTFChars(strFilePath, _strPath);
+    env->ReleaseStringUTFChars(dstFilePath, _dstPath);
+
+    src.close();
+    dst.close();
+
+    return 1;
+}
+
 
 static const JNINativeMethod gMethod[] = {
         {"getDeclaredMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", (void *) Java_getDeclaredMethod},
         {"getMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", (void *) Java_getMethod},
-        {"getDeclaredField", "(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/reflect/Field;", (void *) Java_getDeclaredField}
+        {"getDeclaredField", "(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/reflect/Field;", (void *) Java_getDeclaredField},
+        {"SoFileCopy", "(Ljava/lang/String;Ljava/lang/String;)I", (void *) Java_SoFileCopy}
 };
 
 extern "C"
