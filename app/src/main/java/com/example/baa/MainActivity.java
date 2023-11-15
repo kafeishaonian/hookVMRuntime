@@ -29,8 +29,10 @@ public class MainActivity extends AppCompatActivity {
         tv.setText("哈哈哈哈哈");
 
         tv.setOnClickListener(v -> {
-            hookActivityThread();
+//            hookActivityThread();
 //            hookQueuedWork1();
+
+            new ByteTest();
         });
     }
 

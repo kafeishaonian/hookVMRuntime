@@ -34,6 +34,7 @@ public class Monitor {
                     System.load(libSo.getAbsolutePath());
                     hookVMDebug(libSo.getAbsolutePath(), context);
                 }
+                attachInit(libSo.getAbsolutePath());
             }
         } catch (Exception e) {
             e.printStackTrace();
