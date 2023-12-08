@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
     public void hookQueuedWork(){
         try {
             Class work = Class.forName("android.app.QueuedWork");
-            Method workCurrent = work.getMethod("waitToFinish", null);
+            Method workCurrent = work.getMethod("waitToFinish", Class.class);
             Constructor constructor = work.getConstructor();
             Object object = constructor.newInstance();
-            workCurrent.invoke(object, new Class[]{});
+            workCurrent.invoke(object, new Object[]{});
         } catch (Exception e){
 
         }
